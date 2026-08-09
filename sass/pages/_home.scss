@@ -237,35 +237,35 @@
     background: rgba(rgb(240, 240, 240), 1);
     border-radius: $commonBorderRadius;
     font-weight: 600;
-    /* Code for Modern Browsers */
+    
     &::placeholder {
       color: #999;
       font-weight: 600;
       font-size: 1.6rem;
     }
 
-    /* Code for WebKit, Blink, Edge */
+    
     &::-webkit-input-placeholder {
       color: #999;
       font-weight: 600;
       font-size: 1.6rem;
     }
 
-    /* Code for Internet Explorer 10-11 */
+    
     &:-ms-input-placeholder {
       color: #999;
       font-weight: 600;
       font-size: 1.6rem;
     }
 
-    /* Code for Microsoft Edge */
+    
     &::-ms-input-placeholder {
       color: #999;
       font-weight: 600;
       font-size: 1.6rem;
     }
 
-    /* Code for Mozilla Firefox 4 to 18 */
+    
     &:-moz-placeholder {
       opacity: 1;
       color: #999;
@@ -273,7 +273,7 @@
       font-size: 1.6rem;
     }
 
-    /* Code for Mozilla Firefox 19+ */
+    
     &::-moz-placeholder {
       opacity: 1;
       color: #999;
