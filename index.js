@@ -30,10 +30,15 @@ for (let i = 0; i < headerSmallMenuLinks.length; i++) {
 }
 
 const headerLogoConatiner = document.querySelector('.header__logo-container')
+const headerLogoText = document.querySelector('.header__logo-sub')
 
-headerLogoConatiner.addEventListener('click', () => {
-  location.href = '/'
-})
+// Klik pada teks logo -> routing SPA ke beranda
+if (headerLogoText) {
+  headerLogoText.addEventListener('click', (e) => {
+    e.stopPropagation()
+    location.href = '/'
+  })
+}
 
 async function loadPage(pageName, hash = '') {
     try {
@@ -50,6 +55,7 @@ async function loadPage(pageName, hash = '') {
         
         
         document.getElementById('app-content').innerHTML = html;
+        initCertificatesCarousel();
 
         
         if (hash) {
@@ -76,26 +82,27 @@ async function loadPage(pageName, hash = '') {
 }
 
 document.addEventListener('click', (e) => {
-    const link = e.target.closest('a');
-    
-    
-    if (link && link.origin === window.location.origin && link.getAttribute('target') !== '_blank') {
-        e.preventDefault(); 
-        
-        
-        const fullUrl = link.href; 
-        const urlObj = new URL(fullUrl);
-        
-        
-        const page = urlObj.searchParams.get('p') || 'main';
-        const hash = urlObj.hash;
+  const link = e.target.closest('a');
+  if (!link) return;
 
-        
-        window.history.pushState({ page, hash }, '', fullUrl);
-        
-        
-        loadPage(page, hash);
-    }
+  // Ignore external links or links that open in new tab
+  if (link.getAttribute('target') === '_blank' || link.origin !== window.location.origin) return;
+
+  // Only intercept links that carry the `p` parameter (SPA routes)
+  let urlObj;
+  try {
+    urlObj = new URL(link.href);
+  } catch (err) {
+    return;
+  }
+  if (!urlObj.searchParams.has('p')) return;
+
+  e.preventDefault();
+  const page = urlObj.searchParams.get('p') || 'main';
+  const hash = urlObj.hash;
+
+  window.history.pushState({ page, hash }, '', link.href);
+  loadPage(page, hash);
 });
 
 window.addEventListener('popstate', (e) => {
@@ -108,5 +115,47 @@ window.addEventListener('popstate', (e) => {
 const initialUrl = new URL(window.location.href);
 const initialPage = initialUrl.searchParams.get('p') || 'main';
 const initialHash = initialUrl.hash;
+
+function initCertificatesCarousel() {
+  const carousel = document.querySelector('.certificates__carousel');
+  if (!carousel) return;
+
+  const slides = Array.from(carousel.querySelectorAll('.certificates__slide'));
+  if (!slides.length) return;
+
+  let currentIndex = 0;
+  const prevButton = document.querySelector('.certificates__prev');
+  const nextButton = document.querySelector('.certificates__next');
+
+  const showSlide = (index) => {
+    if (index < 0) index = slides.length - 1;
+    if (index >= slides.length) index = 0;
+    slides.forEach((slide, idx) => {
+      slide.classList.toggle('active', idx === index);
+    });
+    currentIndex = index;
+  };
+
+  showSlide(0);
+
+  if (prevButton) prevButton.onclick = () => showSlide(currentIndex - 1);
+  if (nextButton) nextButton.onclick = () => showSlide(currentIndex + 1);
+
+  // Keyboard navigation: ArrowLeft / ArrowRight
+  if (window._certCarouselKeyHandler) {
+    document.removeEventListener('keydown', window._certCarouselKeyHandler);
+  }
+  window._certCarouselKeyHandler = (e) => {
+    const active = document.activeElement;
+    const tag = active && active.tagName && active.tagName.toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || (active && active.isContentEditable)) return;
+    if (e.key === 'ArrowLeft') {
+      showSlide(currentIndex - 1);
+    } else if (e.key === 'ArrowRight') {
+      showSlide(currentIndex + 1);
+    }
+  };
+  document.addEventListener('keydown', window._certCarouselKeyHandler);
+}
 
 loadPage(initialPage, initialHash);
