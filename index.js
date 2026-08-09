@@ -37,79 +37,83 @@ headerLogoConatiner.addEventListener('click', () => {
   location.href = 'http://nmsyauqi.my.id'
 })
 
-// Fungsi utama untuk mengambil dan menyuntikkan HTML
-async function loadPage(url, push = true) {
+// Fungsi utama untuk mengambil dan menyuntikkan HTML berdasarkan nama parameter
+async function loadPage(pageName, hash = '') {
     try {
-        const pathUrl = url.split('#')[0];
+        // Jika parameter kosong, set default ke 'main'
+        if (!pageName) pageName = 'main';
         
-        // Ambil file HTML
-        const response = await fetch(pathUrl);
-        if (!response.ok) throw new Error('Halaman tidak ditemukan');
+        // Bentuk URL file yang akan di-fetch berdasarkan parameter
+        const fileUrl = `/pages/${pageName}.html`;
+        
+        const response = await fetch(fileUrl);
+        if (!response.ok) throw new Error('Halaman tidak ditemukan atau gagal dimuat');
         
         const html = await response.text();
         
-        // Suntikkan ke dalam tag <main id="app-content">
+        // Suntikkan konten ke dalam DOM
         document.getElementById('app-content').innerHTML = html;
 
-        // Ubah URL di browser tanpa reload
-        if (push) {
-            window.history.pushState({ path: url }, '', url);
-        }
-
-        // Tangani smooth scroll jika URL mengandung hash (#)
-        if (url.includes('#')) {
-            const targetId = url.split('#')[1];
-            const targetElement = document.getElementById(targetId);
+        // Tangani smooth scroll jika ada hash (contoh: #projects)
+        if (hash) {
+            const targetElement = document.getElementById(hash.substring(1)); // Hilangkan tanda '#'
             if (targetElement) {
                 setTimeout(() => {
                     targetElement.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
             }
         } else {
-            // Jika pindah halaman murni tanpa hash, scroll ke paling atas
+            // Jika tidak ada hash, paksa scroll ke paling atas halaman
             window.scrollTo(0, 0);
         }
     } catch (error) {
-        console.error("Gagal memuat halaman:", error);
-        document.getElementById('app-content').innerHTML = '<h2 style="text-align:center; margin-top:5rem;">Gagal memuat konten.</h2>';
+        console.error("Kesalahan Routing:", error);
+        document.getElementById('app-content').innerHTML = `
+            <div style="text-align:center; padding: 5rem 1rem;">
+                <h2>404 - Halaman Gagal Dimuat</h2>
+                <p>Modul yang Anda cari tidak ditemukan.</p>
+                <a href="?p=main" style="color: blue; text-decoration: underline;">Kembali ke Beranda</a>
+            </div>
+        `;
     }
 }
 
-// Tangkap semua klik pada dokumen
+// Tangkap semua klik tautan pada dokumen
 document.addEventListener('click', (e) => {
-    // Cari elemen <a> terdekat dari titik yang diklik
     const link = e.target.closest('a');
     
-    // Validasi: Pastikan itu link, berasal dari origin (domain) yang sama, dan bukan open new tab
+    // Pastikan itu link internal dan tidak menargetkan tab baru
     if (link && link.origin === window.location.origin && link.getAttribute('target') !== '_blank') {
-        e.preventDefault(); // Cegah reload browser bawaan
+        e.preventDefault(); 
         
-        const url = link.getAttribute('href');
-        const currentPath = window.location.pathname;
-        const targetPath = url.split('#')[0];
+        // Ambil URL lengkap dari tautan yang diklik
+        const fullUrl = link.href; 
+        const urlObj = new URL(fullUrl);
+        
+        // Ekstrak parameter 'p' dan hash dari URL yang diklik
+        const page = urlObj.searchParams.get('p') || 'main';
+        const hash = urlObj.hash;
 
-        // Jika mengklik hash di halaman yang sama (contoh: dari main.html klik ke #about)
-        if (currentPath === targetPath || (currentPath === '/' && targetPath.includes('main.html'))) {
-             if (url.includes('#')) {
-                 const targetId = url.split('#')[1];
-                 const targetElement = document.getElementById(targetId);
-                 if (targetElement) {
-                     targetElement.scrollIntoView({ behavior: 'smooth' });
-                     window.history.pushState(null, '', url);
-                 }
-             }
-        } else {
-            // Jika mengklik halaman berbeda (contoh: dari main.html ke exercisory.html)
-            loadPage(url);
-        }
+        // Perbarui bilah alamat browser
+        window.history.pushState({ page, hash }, '', fullUrl);
+        
+        // Jalankan fungsi injeksi
+        loadPage(page, hash);
     }
 });
 
 // Tanggapi tombol back/forward di browser
-window.addEventListener('popstate', () => {
-    loadPage(window.location.pathname + window.location.hash, false);
+window.addEventListener('popstate', (e) => {
+    const urlObj = new URL(window.location.href);
+    const page = urlObj.searchParams.get('p') || 'main';
+    const hash = urlObj.hash;
+    loadPage(page, hash);
 });
 
-// Muat halaman default saat web pertama kali dibuka
-// Pastikan path ini sesuai dengan struktur folder Anda
-loadPage('./pages/main.html', false);
+// INISIALISASI SAAT HALAMAN PERTAMA KALI DIBUKA (Direct Access)
+// Membaca URL saat ini untuk menentukan modul apa yang harus di-render
+const initialUrl = new URL(window.location.href);
+const initialPage = initialUrl.searchParams.get('p') || 'main';
+const initialHash = initialUrl.hash;
+
+loadPage(initialPage, initialHash);
