@@ -122,7 +122,25 @@
       </div>
     </footer>
 
-    
+    <audio id="bgMusic" src="assets/mp3/Lets Play.mp3" loop></audio>
+    <script>
+      const audio = document.getElementById('bgMusic');
+      audio.volume = 0.1;
+      function putarAudio() {
+        audio.play()
+          .then(() => {
+            console.log("Autoplay berhasil berjalan!");
+            document.removeEventListener('click', putarAudio);
+            document.removeEventListener('touchstart', putarAudio);
+          })
+          .catch((error) => {
+            console.log("Autoplay diblokir browser, menunggu interaksi pengguna...", error);
+          });
+      }
+      window.addEventListener('DOMContentLoaded', putarAudio);
+      document.addEventListener('click', putarAudio);
+      document.addEventListener('touchstart', putarAudio); 
+    </script>
     <script src="./index.js"></script>
     <script src="./js/router.js"></script>
   </body>
