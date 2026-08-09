@@ -122,26 +122,82 @@
       </div>
     </footer>
 
-    <audio id="bgMusic" src="assets/mp3/Lets Play.mp3" loop></audio>
+    <!-- AUDIO PLAYER -->
+    <div id="yt-player" style="display: none;"></div>
+
     <script>
-      const audio = document.getElementById('bgMusic');
-      audio.volume = 0.3;
-      function putarAudio() {
-        audio.play()
-          .then(() => {
-            console.log("Autoplay berhasil berjalan!");
-            document.removeEventListener('click', putarAudio);
-            document.removeEventListener('touchstart', putarAudio);
-          })
-          .catch((error) => {
-            console.log("Autoplay diblokir browser, menunggu interaksi pengguna...", error);
-          });
+      // 1. Daftar ID Video YouTube Music
+      const playlistID = [
+        "LHZwI7uXC8E", // Lets Play (Stellaris)
+        "ijaxA9HVWQE", // Tiny Planets
+        "cKT6Y8wbPDw"  // Carribean Blue
+      ];
+
+      let currentTrackIndex = 0;
+      let player = null;
+      let playerReady = false;
+
+      // 2. Muat library YouTube IFrame API secara asinkron
+      const ytScript = document.createElement('script');
+      ytScript.src = 'https://www.youtube.com/iframe_api';
+      const firstScript = document.getElementsByTagName('script')[0];
+      firstScript.parentNode.insertBefore(ytScript, firstScript);
+
+      // 3. Fungsi callback global yang dipanggil oleh API YouTube
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('yt-player', {
+          height: '0',
+          width: '0',
+          videoId: playlistID[currentTrackIndex],
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            rel: 0,
+            modestbranding: 1,
+            playsinline: 1,
+            origin: window.location.origin
+          },
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange
+          }
+        });
       }
-      window.addEventListener('DOMContentLoaded', putarAudio);
-      document.addEventListener('click', putarAudio);
-      document.addEventListener('touchstart', putarAudio); 
+
+      function onPlayerReady(event) {
+        playerReady = true;
+        player.setVolume(30);
+      }
+
+      function playBackgroundMusic() {
+        if (!playerReady || !player || typeof player.playVideo !== 'function') {
+          return false;
+        }
+        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+          return true;
+        }
+        player.playVideo();
+        return true;
+      }
+
+      function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.ENDED) {
+          currentTrackIndex = (currentTrackIndex + 1) % playlistID.length;
+          player.loadVideoById(playlistID[currentTrackIndex]);
+        }
+      }
+
+      // Mulai pemutaran setelah interaksi user untuk memenuhi kebijakan browser terhadap autoplay
+      function activateBackgroundAudio() {
+        if (playBackgroundMusic()) {
+          document.removeEventListener('click', activateBackgroundAudio);
+          document.removeEventListener('touchstart', activateBackgroundAudio);
+        }
+      }
+
+      document.addEventListener('click', activateBackgroundAudio);
+      document.addEventListener('touchstart', activateBackgroundAudio);
     </script>
+
     <script src="./index.js"></script>
-    <script src="./js/router.js"></script>
-  </body>
-</html>
+
