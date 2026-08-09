@@ -135,7 +135,7 @@
         <div class="projects__row-content">
           <h3 class="projects__row-content-title">Jagawarung</h3>
           <p class="projects__row-content-desc">
-            JagaWarung is a Web and Mobile app, Flutter based Point of Sale (POS) system. 
+            JagaWarung is a Web and Mobile app, Flutter based Point of Sale (POS) system.
           </p>
           <a href="/?p=jagawarung" class="btn btn--med btn--theme dynamicBgClr">Case Study</a>
         </div>        
@@ -156,27 +156,31 @@
       </span>
     </h2>
     <div class="certificates__carousel">
-      <button type="button" class="certificates__control certificates__prev">‹</button>
-      <div class="certificates__slide">
-        <img src="./assets/jpeg/Web Dev.jpg" alt="Web Dev Course" class="certificates__slide-img" loading="lazy" />
-        <p class="certificates__slide-caption">Web Development Course Certificate</p>
-      </div>
-      <div class="certificates__slide">
-        <img src="./assets/jpeg/Basic PHP Course.jpg" alt="Basic PHP Course" class="certificates__slide-img"
-          loading="lazy" />
-        <p class="certificates__slide-caption">Basic PHP Course Certificate</p>
-      </div>
-      <div class="certificates__slide">
-        <img src="./assets/jpeg/Basic Dart Course.jpg" alt="Basic Dart Course" class="certificates__slide-img"
-          loading="lazy" />
-        <p class="certificates__slide-caption">Basic Dart Course Certificate</p>
-      </div>
-      <div class="certificates__slide">
-        <img src="./assets/jpeg/English Proficiency Test.jpg" alt="English Proficiency" class="certificates__slide-img"
-          loading="lazy" />
-        <p class="certificates__slide-caption">English Proficiency Test Certificate</p>
-      </div>
-      <button type="button" class="certificates__control certificates__next">›</button>
+      <div class="certificates__viewport">
+          <div class="certificates__slide">
+            <img src="./assets/jpeg/Web Dev.jpg" alt="Web Dev Course" class="certificates__slide-img" loading="lazy" />
+            <p class="certificates__slide-caption">Web Development Course Certificate</p>
+          </div>
+          <div class="certificates__slide">
+            <img src="./assets/jpeg/Basic PHP Course.jpg" alt="Basic PHP Course" class="certificates__slide-img"
+              loading="lazy" />
+            <p class="certificates__slide-caption">Basic PHP Course Certificate</p>
+          </div>
+          <div class="certificates__slide">
+            <img src="./assets/jpeg/Basic Dart Course.jpg" alt="Basic Dart Course" class="certificates__slide-img"
+              loading="lazy" />
+            <p class="certificates__slide-caption">Basic Dart Course Certificate</p>
+          </div>
+          <div class="certificates__slide">
+            <img src="./assets/jpeg/English Proficiency Test.jpg" alt="English Proficiency" class="certificates__slide-img"
+              loading="lazy" />
+            <p class="certificates__slide-caption">English Proficiency Test Certificate</p>
+          </div>
+
+          <!-- controls inside viewport so they overlay image edges -->
+          <button type="button" class="certificates__control certificates__prev">‹</button>
+          <button type="button" class="certificates__control certificates__next">›</button>
+        </div>
     </div>
   </div>
 </section>
