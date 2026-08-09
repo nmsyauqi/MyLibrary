@@ -47,4 +47,4 @@ Karena portofolio ini menggunakan Fetch API untuk menarik file HTML, proyek ini 
 4.  Akses melalui `http://127.0.0.1:5500`.
 
 ---
-*© Copyright 2026. Made by [Nmsyauqi](https://nmsyauqi.my.id).*
+*© Copyright 2026. Made by [Nmsyauqi](https://nmsyauqi.my.id).*q
