@@ -5,6 +5,28 @@ const headerHamMenuCloseBtn = document.querySelector(
   '.header__main-ham-menu-close'
 )
 const headerSmallMenuLinks = document.querySelectorAll('.header__sm-menu-link')
+const mobileQrisLink = document.querySelector('#mobile-qris-link')
+
+if (mobileQrisLink) {
+  const goPayDeepLink = mobileQrisLink.dataset.gopayDeeplink || 'gojek://gopay'
+  const fallbackHref = mobileQrisLink.dataset.fallbackHref || '/assets/jpeg/qris.jpg'
+
+  mobileQrisLink.addEventListener('click', (event) => {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+    if (!isMobile) return
+
+    event.preventDefault()
+
+    const startTime = Date.now()
+    window.location.href = goPayDeepLink
+
+    setTimeout(() => {
+      if (Date.now() - startTime < 2000) {
+        window.location.href = fallbackHref
+      }
+    }, 1200)
+  })
+}
 
 hamMenuBtn.addEventListener('click', () => {
   if (smallMenu.classList.contains('header__sm-menu--active')) {
