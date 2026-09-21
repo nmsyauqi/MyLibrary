@@ -190,6 +190,52 @@ textarea {
     @media only screen and (max-width: 56.25em) {
       .home-hero__socials {
         display: none; } }
+
+@media only screen and (max-width: 37.5em) {
+  .home-hero__socials {
+    display: flex;
+    position: sticky;
+    top: calc(var(--header-height, 7.2rem));
+    /* center horizontally without absolute transforms */
+    margin: 0 auto;
+    /* keep initial placement slightly below header */
+    padding: 0.2rem 0.4rem;
+    border: 2px solid #eee;
+    border-radius: 4px;
+    background: transparent;
+    align-items: center;
+    gap: 0;
+    z-index: 900;
+    width: fit-content;
+  }
+
+  .home-hero__social {
+    width: 5rem;
+  }
+
+  /* match desktop link style (block with bottom border), rotated to horizontal using right border */
+  .home-hero__social-icon-link {
+    width: 100%;
+    display: block;
+    padding: 1.2rem;
+    border-right: 2px solid #eee;
+    transition: background .18s;
+    background: transparent;
+  }
+
+  .home-hero__social-icon-link:hover {
+    background: rgba(255,255,255,0.06);
+  }
+
+  .home-hero__social-icon-link--bd-none {
+    border-right: 0;
+  }
+
+  .home-hero__social-icon {
+    width: 100%;
+    display: block;
+  }
+}
   .home-hero__mouse-scroll-cont {
     position: absolute;
     bottom: 3%;
@@ -212,6 +258,24 @@ textarea {
       border-bottom: 0; }
   .home-hero__social-icon {
     width: 100%; }
+
+@media only screen and (max-width: 37.5em) {
+  /* Ensure desktop rules don't create double borders on mobile */
+  .home-hero__social-icon-link {
+    border-bottom: 0;
+    border-right: 2px solid #eee;
+    padding: 1.2rem;
+    background: transparent;
+  }
+
+  .home-hero__social-icon-link--bd-none {
+    border-right: 0;
+  }
+
+  .home-hero__socials {
+    overflow: hidden;
+  }
+}
   .home-hero__content {
     position: absolute;
     top: 50%;
