@@ -58,7 +58,9 @@ const headerLogoText = document.querySelector('.header__logo-sub')
 if (headerLogoText) {
   headerLogoText.addEventListener('click', (e) => {
     e.stopPropagation()
-    location.href = '/'
+
+    window.history.pushState({ page: 'main', hash: '' }, '', '/?p=main');
+    loadPage('main');
   })
 }
 
@@ -107,7 +109,15 @@ document.addEventListener('click', (e) => {
   const link = e.target.closest('a');
   if (!link) return;
 
-  // Ignore external links or links that open in new tab
+  const hrefAttr = link.getAttribute('href') || '';
+  const isDocFile = /\.(pdf|jpg|jpeg|png|gif|zip|doc|docx|xls|xlsx)$/i.test(hrefAttr);
+
+  if (isDocFile) {
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener');
+    return;
+  }
+
   if (link.getAttribute('target') === '_blank' || link.origin !== window.location.origin) return;
 
   // Only intercept links that carry the `p` parameter (SPA routes)
