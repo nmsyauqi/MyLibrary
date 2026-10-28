@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Fullscreen</title>
+    <style>
+        /* Menghilangkan space kosong bawaan browser */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000; /* Latar belakang hitam jika rasio video berbeda */
+        }
+
+        /* Memaksa video memenuhi layar */
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Video akan memenuhi layar (bisa terpotong sedikit agar pas) */
+            /* Gunakan 'object-fit: contain;' jika tidak ingin video terpotong (akan ada hitam di samping/atas) */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Catatan: Atribut 'muted' wajib ada agar autoplay berhasil di browser modern -->
+    <video src="../playback.mp4" autoplay loop muted playsinline></video>
+
+</body>
+</html>
